@@ -1,0 +1,20 @@
+[tool.ruff]
+line-length = 88
+target-version = "py39"
+
+[tool.ruff.lint]
+# Select core linting rules. E (Errors), F (Flake8), B (Bugbear).
+select = ["E", "F", "B"]
+
+# Extend the selection with a few more useful checks.
+extend-select = ["W", "I", "C4"]
+
+[tool.ruff.format]
+# Enable the Ruff formatter.
+quote-style = "double"
+indent-style = "space"
+
+[tool.pytest.ini_options]
+minversion = "7.4.4"
+addopts = "-ra -q"
+testpaths = ["test"]
