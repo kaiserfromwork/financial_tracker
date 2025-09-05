@@ -14,30 +14,59 @@ Project Objective:
 
 **Minimum Viable Product (MVP):**
 
-- Creation/Deletion of expenses with  these fields:
-    - Date
-    - Vendor
-    - Currency
-    - Amount
-    - Type of payment
-    - Category
-        - Subcategory
-    - Account
-- View of Expenses:
-    - Date
-    - Business
-    - Currency
-    - Amount
-    - Type of payment
-    - Category
-        - Subcategory
-    - Account
-- Creation/Deletion of Account
-    - Name
-    - Currency
-    - Current Balance
-    - Transaction
-        - Credit/Debit
+- Users (TABLE)
+    - userID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - userName - VARCHAR(50), NOT NULL
+    - userEmail - VARCHAR (255), NOT NULL, UNIQUE
+    - passwordhashed - CHAR (60), NOT NULL
+    - salt - CHAR (32), NOT NULL
+    - registrationDate - DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+- Account (TABLE)
+    - accountID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - userID (FK) - INT, NOT NULL, (FK REFERENCE user.userID)
+    - bankName - VARCHAR(50), NOT NULL
+    - accountName - VARCHAR(50), NOT NULL
+    - accountType (FK) - INT, NOT NULL, (FK REFERENCE accountType.accountTypeID)
+    - currencyID - INT, NOT NULL, (FK REFERENCE currencies.currencyID)
+
+- accounType (TABLE)
+    - accountTypeID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - typeName - VARCHAR(50), UNIQUE, NOT NULL
+
+- Vendor (TABLE)
+    - vendorID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - vendorName - VARCHAR (50), UNIQUE, NOT NULL
+
+- Invoice(TABLE)
+    - invoiceID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - userID (FK) - INT, NOT NULL, FOREIGN REFERENCE User.UserID
+    - vendorID (FK) - INT, NOT NULL, FOREIGN REFERENCE vendor.vendorID
+    - description - TEXT
+    - dueDate - DATE, NOT NULL
+    - amount - DECIMAL(10,2), NOT NULL
+    - currencyID (FK) - INT, NOT NULL, (FK REFERENCE currencies.currencyID)
+    - categoryID (FK) - INT, NOT NULL, (FK REFERENCE category.categoryID)
+
+- Transactions (TABLE)
+    - transactionID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - accountID (FK) - INT, NOT NULL, FOREIGN REFERENCE account.accountID
+    - date - DATE, NOT NULL
+    - description - TEXT
+    - amount - DECIMAL(10,2)
+    - currencyID (FK) - INT, NOT NULL (FK REFERENCE currencies.currencyID)
+    - categoryID (FK) - INT, NOT NULL, (FK REFERENCE category.categoryID)
+
+- Category (self-referencing TABLE)
+    - CategoryID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - name - VARCHAR(50), UNIQUE, NOT NULL
+    - ParentCategoryID - INT
+    - description - TEXT
+
+- Currencies
+    - currencyID (PK) INT, AUTO
+    - currencyName - VARCHAR(10), UNIQUE, NOT NULL
+    - currencyValue - DECIMAL(10,2)
 
 **Future Features:**
 
