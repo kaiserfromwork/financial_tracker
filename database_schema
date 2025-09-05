@@ -1,0 +1,57 @@
+
+- users (TABLE)
+    - userID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - userName - VARCHAR(50), NOT NULL
+    - userEmail - VARCHAR (255), NOT NULL, UNIQUE
+    - passwordhashed - VARCHAR(255), NOT NULL
+    - salt - VARCHAR(255), NOT NULL
+    - registrationDate - DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+
+- account (TABLE)
+    - accountID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - userID (FK) - INT, NOT NULL, (FK REFERENCE user.userID)
+    - bankName - VARCHAR(50), NOT NULL
+    - accountName - VARCHAR(50), NOT NULL
+    - accountTypeID (FK) - INT, NOT NULL, (FK REFERENCE accountType.accountTypeID)
+    - currencyID - INT, NOT NULL, (FK REFERENCE currencies.currencyID)
+
+- accountType (TABLE)
+    - accountTypeID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - typeName - VARCHAR(50), UNIQUE, NOT NULL
+
+- vendor (TABLE)
+    - vendorID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - vendorName - VARCHAR (50), UNIQUE, NOT NULL
+
+- transaction (TABLE)
+    - transactionID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - accountID (FK) - INT, NOT NULL, (FK REFERENCE account.accountID)
+    - vendorID (FK) - INT, NOT NULL, (FK REFERENCE vendor.vendorID)
+    - date - DATETIME, NOT NULL
+    - description - TEXT
+    - amount - DECIMAL(10,2)
+    - currencyID (FK) - INT, NOT NULL (FK REFERENCE currencies.currencyID)
+    - categoryID (FK) - INT, NOT NULL, (FK REFERENCE category.categoryID)
+
+- category (self-referencing TABLE)
+    - categoryID (PK) - INT, AUTO_INCREMENT, PRIMARY KEY
+    - categoryName - VARCHAR(50), UNIQUE, NOT NULL
+    - parentCategoryID - INT
+    - description - TEXT
+
+- currency
+    - currencyID (PK) INT, AUTO
+    - currencyName - VARCHAR(10), UNIQUE, NOT NULL
+    - currencyValue - DECIMAL(10,2)
+
+
+** RELATIONSHIPS
+
+- user -> account (1:M)
+- account -> accountType (1:M)
+- vendor -> transaction (1:M)
+- transaction -> account (M:1) 
+- transaction -> category (M:1)
+- currency -> transaction (1:M)
+- currency -> account (1:M)
+- category -> category (1:M) SELF-REFERENCING
