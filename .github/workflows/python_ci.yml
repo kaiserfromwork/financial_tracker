@@ -1,72 +1,51 @@
 
-name: Python CIon:
+name: Python CI
+  
 
+on:
   push:
-
-    branches:
-
-      - main
-
-      - "**"
-
   pull_request:
 
-    branches:
 
-      - mainjobs:
-
+jobs:
   lint-and-test:
-
     runs-on: ubuntu-latest
 
-    strategy:
-
-      matrix:
-
-        python-version:
-
-          - "3.9"
-
-          - "3.10"
-
-          - "3.11"
 
     steps:
-
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
 
+      - name: Set up Python 
         uses: actions/setup-python@v5
-
         with:
+          python-version: 3.11 
 
-          python-version: ${{ matrix.python-version }}
 
       - name: Cache pip dependencies
-
         uses: actions/cache@v4
-
         with:
-
           path: ~/.cache/pip
-
           key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
-
           restore-keys: ${{ runner.os }}-python-
 
+
       - name: Install Dependencies
-
         run: |
-
           python -m pip install --upgrade pip
+          pip install ruff pytest mypy pytest-cov
 
-          pip install -r requirements.txt      - name: Run Ruff Checks
 
+      - name: Run Ruff Check
         run: |
-
           ruff check .
+          ruff format --check . 
+      
 
-          ruff format --check .      - name: Run Unit Test
+      - name: Run Unit Test
+        run: pytest --cov=coverage_package
 
-        run: pytest
+
+      - name: Run Type Check
+        run: mypy .
+    
