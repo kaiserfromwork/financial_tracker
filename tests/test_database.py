@@ -1,5 +1,6 @@
 import sqlite3
 import pytest
+import os
 
 from src.database import Database
 
@@ -10,6 +11,11 @@ def test_db_conn():
     conn = db._connect()
     yield conn
     conn.close()
+
+
+def delete_temp_db(temp_db):
+    if os.path.exists(temp_db):
+        os.remove(temp_db)
 
 
 def test_connect(test_db_conn):
@@ -38,3 +44,5 @@ def test_add_user():
         cur.execute("SELECT * FROM user")
         result = cur.fetchall()
         assert len(result) == 1
+
+        delete_temp_db("my_database.db")
