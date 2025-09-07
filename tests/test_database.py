@@ -36,7 +36,7 @@ def test_add_user():
         assert isinstance(conn, sqlite3.Connection)
         cur = conn.cursor()
         cur.execute(
-            "CREATE TABLE user (user_name, user_email, password_hashed, salt , registration_date)"
+            "CREATE TABLE user (user_id INTEGER PRIMARY KEY, user_name, user_email, password_hashed, salt , registration_date)"
         )
         db.add_user(
             "Lucas", "my_email@mail.com", "password_salted", "password_salt", "12-12-12"
@@ -44,5 +44,29 @@ def test_add_user():
         cur.execute("SELECT * FROM user")
         result = cur.fetchall()
         assert len(result) == 1
+
+        delete_temp_db("my_database.db")
+
+
+def test_delete_user():
+    db = Database("my_database.db")
+    with db._connect() as conn:
+        assert isinstance(conn, sqlite3.Connection)
+
+        cur = conn.cursor()
+        cur.execute("""
+            CREATE TABLE user (user_id INTEGER PRIMARY KEY, user_name, user_email, password_hashed, salt, registration_date)
+        """)
+
+        db.add_user("Lucas", "my_email@mail.com", "password_salted", "salt", "20-20-20")
+        delete_row = db.delete_user("Not-a-user", "210293")
+        assert delete_row is False
+
+        delete_user = db.delete_user("Lucas", "my_email@mail.com")
+        assert cur.rowcount == -1
+        assert delete_user is True
+
+        delete_test = db.delete_user("Lucas", "my_email@mail.com")
+        assert delete_test is False
 
         delete_temp_db("my_database.db")
