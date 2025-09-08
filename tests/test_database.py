@@ -70,3 +70,30 @@ def test_delete_user():
         assert delete_test is False
 
         delete_temp_db("my_database.db")
+
+
+def test_select_user():
+    db = Database("my_database.db")
+    with db._connect() as conn:
+        cur = conn.cursor()
+
+        cur.execute("""
+            CREATE TABLE user (user_id INTEGER PRIMARY KEY, user_name, user_email, password_hashed, salt, registration_date)
+        """)
+        db.add_user("Lucas", "my_email@mail.com", "password_salted", "salt", "20-20-20")
+
+        user_info = {
+            "user_name": "Lucas",
+            "user_email": "my_email@mail.com",
+            "registration_date": "20-20-20",
+        }
+        result = db.select_user(user_info)
+        assert isinstance(result, list)
+
+        wrong_user_info = {
+            "user_name": "Sucal",
+            "user_email": "my_mail@mail.com",
+            "registration_date": "10-20-20",
+        }
+        result = db.select_user(wrong_user_info)
+        assert result is None
