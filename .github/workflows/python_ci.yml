@@ -46,4 +46,4 @@ jobs:
         run: pytest --cov=src tests
 
       - name: Run Type Check
-        run: mypy
+        run: mypy src
