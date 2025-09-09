@@ -90,6 +90,11 @@ def test_select_user():
         result = db.select_user(user_info)
         assert isinstance(result, list)
 
+        user_id, user_name, user_email = result[0]
+        assert user_id == 1
+        assert user_name == "Lucas"
+        assert user_email == "my_email@mail.com"
+
         wrong_user_info = {
             "user_name": "Sucal",
             "user_email": "my_mail@mail.com",
