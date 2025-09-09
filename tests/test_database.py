@@ -6,8 +6,9 @@ from src.database import Database
 
 
 @pytest.fixture
-def test_db_conn():
-    db = Database("my_database.db")
+def test_db_conn(tmp_path):
+    db_file = tmp_path / "my_database.db"
+    db = Database(str(db_file))
     conn = db._connect()
     yield conn
     conn.close()
@@ -30,8 +31,9 @@ def test_connect(test_db_conn):
     conn.close()
 
 
-def test_add_user():
-    db = Database("my_database.db")
+def test_add_user(tmp_path):
+    db_file = tmp_path / "my_database.db"
+    db = Database(str(db_file))
     with db._connect() as conn:
         assert isinstance(conn, sqlite3.Connection)
         cur = conn.cursor()
@@ -48,8 +50,9 @@ def test_add_user():
         delete_temp_db("my_database.db")
 
 
-def test_delete_user():
-    db = Database("my_database.db")
+def test_delete_user(tmp_path):
+    db_file = tmp_path / "my_database.db"
+    db = Database(str(db_file))
     with db._connect() as conn:
         assert isinstance(conn, sqlite3.Connection)
 
@@ -72,8 +75,9 @@ def test_delete_user():
         delete_temp_db("my_database.db")
 
 
-def test_select_user():
-    db = Database("my_database.db")
+def test_select_user(tmp_path):
+    db_file = tmp_path / "my_database.db"
+    db = Database(str(db_file))
     with db._connect() as conn:
         cur = conn.cursor()
 
