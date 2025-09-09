@@ -40,13 +40,10 @@ jobs:
         run: |
           ruff check .
           ruff format --check . 
-        working-directory: ./src
       
 
       - name: Run Unit Test
-        run: pytest --cov=src
-        working-directory: ./src
+        run: pytest --cov=src tests
 
       - name: Run Type Check
-        run: mypy .
-        working-directory: ./src
+        run: mypy
