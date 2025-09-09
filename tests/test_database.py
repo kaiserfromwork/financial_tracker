@@ -102,3 +102,5 @@ def test_select_user():
         }
         result = db.select_user(wrong_user_info)
         assert result is None
+
+        delete_temp_db("my_database.db")
