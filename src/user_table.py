@@ -1,6 +1,4 @@
-from typing import Optional
-
-
+# TODO: REMOVE print() for Log
 class UserTable:
     def __init__(self, db_file):
         self.db_file = db_file
@@ -49,7 +47,11 @@ class UserTable:
                 print(f"Multiple users found named {name} with email({email}).")
                 return False
 
+    # TODO: Change type annotation, check that user_info is a valid type and not empty
     def select_user(self, user_info: dict) -> list | None:
+        if not user_info:
+            return None
+
         db = self.db_file
         with db._connect() as conn:
             cur = conn.cursor()
@@ -61,37 +63,58 @@ class UserTable:
                 f"SELECT user_id, user_name, user_email FROM user WHERE {where_clause}",
                 values,
             )
-            result = cur.fetchall()
+            result = (
+                cur.fetchall()
+            )  # TODO: Change this to fetchone, change update_user afterwards
 
             return result if result else None
 
     def update_user(
         self,
         update_info: dict,
-        user_info: Optional[dict] = None,
-        user_id: Optional[int] = None,
+        user_info: dict,
     ) -> bool:  # TODO: CURRENTLY RETURN bool, might change it to the updated row.
+        if not isinstance(update_info, dict):
+            raise TypeError(
+                f"update_info expected to be a dictionary, but got: {type(update_info).__name__}"
+            )
+        if not isinstance(user_info, dict):
+            raise TypeError(
+                f"user_info expected to be a dictionary, but got: {type(user_info).__name__}"
+            )
+
         db = self.db_file
         with db._connect() as conn:
             cur = conn.cursor()
 
-            result = ""
-            if user_info is not None:
+            if not user_info:
+                print("User select information is missing!")
+                return False
+            else:
                 result = self.select_user(user_info)
-            elif user_id is not None:
-                info_dict = {"user_id": user_id}
-                result = self.select_user(info_dict)
+                if result:
+                    user_id, user_name, user_email = result[
+                        0
+                    ]  # TODO: CHANGE select query to fetchone, change this to result afterwards
+                    print("User selected!")
+                else:
+                    user_id, user_name, user_email = [None, None, None]
+                    print("User not found!")
 
-            if result:
-                user_id, user_name, user_email = result
+            if not update_info:
+                print("User update infomation is missing!")
+                return False
+            else:
+                set_clause = " , ".join(
+                    f"{col} = '{value}'" for col, value in update_info.items()
+                )
 
-            set_clause = " , ".join(
-                f"{col} = '{value}'" for col, value in update_info.items()
-            )
+            if set_clause and user_id:
+                cur.execute(
+                    f"UPDATE user SET {set_clause} WHERE user_id = ?", (user_id,)
+                )
 
-            cur.execute(f"UPDATE user SET {set_clause} WHERE id = ?", user_id)
-            res = cur.fetchall()
-            if res:
-                return True
             else:
                 return False
+
+            return True if cur.rowcount else False
