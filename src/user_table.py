@@ -2,7 +2,7 @@ class UserTable:
     def __init__(self, db_file):
         self.db_file = db_file
 
-    def add_user(self, name, email, password_hashed, salt, registration_date):
+    def add_user(self, name, email, password_hashed, salt, registration_date) -> None:
         db = self.db_file
         with db._connect() as conn:
             cur = conn.cursor()
