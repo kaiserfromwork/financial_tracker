@@ -1,3 +1,6 @@
+from typing import Optional
+
+
 class UserTable:
     def __init__(self, db_file):
         self.db_file = db_file
@@ -61,3 +64,34 @@ class UserTable:
             result = cur.fetchall()
 
             return result if result else None
+
+    def update_user(
+        self,
+        update_info: dict,
+        user_info: Optional[dict] = None,
+        user_id: Optional[int] = None,
+    ) -> bool:  # TODO: CURRENTLY RETURN bool, might change it to the updated row.
+        db = self.db_file
+        with db._connect() as conn:
+            cur = conn.cursor()
+
+            result = ""
+            if user_info is not None:
+                result = self.select_user(user_info)
+            elif user_id is not None:
+                info_dict = {"user_id": user_id}
+                result = self.select_user(info_dict)
+
+            if result:
+                user_id, user_name, user_email = result
+
+            set_clause = " , ".join(
+                f"{col} = '{value}'" for col, value in update_info.items()
+            )
+
+            cur.execute(f"UPDATE user SET {set_clause} WHERE id = ?", user_id)
+            res = cur.fetchall()
+            if res:
+                return True
+            else:
+                return False
