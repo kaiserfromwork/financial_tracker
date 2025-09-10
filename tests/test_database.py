@@ -1,6 +1,5 @@
 import sqlite3
 import pytest
-import os
 
 from src.database import Database
 from src.user_table import UserTable
