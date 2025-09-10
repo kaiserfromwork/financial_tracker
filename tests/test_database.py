@@ -13,11 +13,6 @@ def database(tmp_path):
     return db
 
 
-def delete_temp_db(temp_db):
-    if os.path.exists(temp_db):
-        os.remove(temp_db)
-
-
 def test_add_user(database):
     db = database
     user_table = UserTable(database)
@@ -33,8 +28,6 @@ def test_add_user(database):
         cur.execute("SELECT * FROM user")
         result = cur.fetchall()
         assert len(result) == 1
-
-        delete_temp_db("my_database.db")
 
 
 def test_delete_user(database):
@@ -60,8 +53,6 @@ def test_delete_user(database):
 
         delete_test = user_table.delete_user("Lucas", "my_email@mail.com")
         assert delete_test is False
-
-        delete_temp_db("my_database.db")
 
 
 def test_select_user(database):
@@ -97,5 +88,3 @@ def test_select_user(database):
         }
         result = user_table.select_user(wrong_user_info)
         assert result is None
-
-        delete_temp_db("my_database.db")
