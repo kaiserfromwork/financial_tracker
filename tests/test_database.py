@@ -1,4 +1,3 @@
-import sqlite3
 import pytest
 
 from src.database import Database
@@ -79,7 +78,7 @@ def test_delete_user(conn_setup, user_table, my_user):
 
 
 def test_select_user(conn_setup, user_table, my_user, my_user_dict):
-    conn = conn_setup
+    _ = conn_setup
     user_table.add_user(*my_user)
 
     result = user_table.select_user(my_user_dict)
@@ -100,7 +99,7 @@ def test_select_user(conn_setup, user_table, my_user, my_user_dict):
 
 
 def test_update_user(conn_setup, user_table, my_user, my_user_dict):
-    conn = conn_setup
+    _ = conn_setup
     user_table.add_user(*my_user)
 
     update_info = None

@@ -93,12 +93,12 @@ class UserTable:
             else:
                 result = self.select_user(user_info)
                 if result:
-                    user_id, user_name, user_email = result[
+                    user_id, _, _ = result[
                         0
                     ]  # TODO: CHANGE select query to fetchone, change this to result afterwards
                     print("User selected!")
                 else:
-                    user_id, user_name, user_email = [None, None, None]
+                    user_id, _, _ = [None, None, None]
                     print("User not found!")
 
             if not update_info:
